@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>XprotolabInterface</class>
+ <widget class="QMainWindow" name="XprotolabInterface">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>XScopes Interface Software</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="xprotolabinterface.qrc">
+    <normaloff>:/images/images/GT-icon16.png</normaloff>:/images/images/GT-icon16.png</iconset>
+  </property>
+  <widget class="QWidget" name="centralwidget"/>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>800</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menuView">
+    <property name="title">
+     <string>View</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menuTools">
+    <property name="title">
+     <string>Tools</string>
+    </property>
+    <addaction name="actionUpgrade_Firmware"/>
+   </widget>
+   <widget class="QMenu" name="menuControl">
+    <property name="title">
+     <string>Control</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menuAbout">
+    <property name="title">
+     <string>About</string>
+    </property>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menuView"/>
+   <addaction name="menuControl"/>
+   <addaction name="menuTools"/>
+   <addaction name="menuAbout"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionUpgrade_Firmware">
+   <property name="icon">
+    <iconset resource="xprotolabinterface.qrc">
+     <normaloff>:/images/images/download2.png</normaloff>:/images/images/download2.png</iconset>
+   </property>
+   <property name="text">
+    <string>Upgrade Firmware</string>
+   </property>
+  </action>
+ </widget>
+ <resources>
+  <include location="xprotolabinterface.qrc"/>
+ </resources>
+ <connections/>
+</ui>
