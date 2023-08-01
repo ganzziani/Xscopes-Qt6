@@ -24,8 +24,8 @@ private slots:
     void on_pushEEPROM_clicked();
     void on_pushStart_clicked();
     void on_pushDoEverything_clicked();
-    void HEXDownloaded(int id);
-    void EEPDownloaded(int id);
+    void HEXDownloaded(QNetworkReply::NetworkError error, QString ErrorString);
+    void EEPDownloaded(QNetworkReply::NetworkError error, QString ErrorString);
     void on_pushAutoLoad_clicked();
     void on_radioXprotolab_clicked();
     void on_radioXminilab_clicked();
@@ -39,7 +39,8 @@ private slots:
     void on_pushReadEE_clicked();
     void ProcessDone(int exit_val);
     QString SelectFile(bool LoadHEX);
-    void ErrorOcurred(QProcess::ProcessError error);
+    void ShowProcessError(QProcess::ProcessError error);
+    void ShowDownloadError(QNetworkReply::NetworkError error);
 private:
     bool doEverything;
     QProcess *myProcess;

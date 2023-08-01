@@ -17,11 +17,10 @@ FileDownloader::~FileDownloader() { }
 void FileDownloader::fileDownloaded(QNetworkReply *pReply) {
     if(pReply->error() != QNetworkReply::NoError) {
         qDebug() << "FileDownloader: Get Request Error!";
-        emit downloaded(-1);    // Signal error
     } else {
         m_DownloadedData = pReply->readAll();
-        emit downloaded(myId);
     }
+    emit downloaded(pReply->error(), pReply->errorString());
     pReply->deleteLater();
 }
 
