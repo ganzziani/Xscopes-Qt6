@@ -24,7 +24,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>22</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -52,6 +52,7 @@
     <property name="title">
      <string>About</string>
     </property>
+    <addaction name="actionAbout_XScopes_Interface"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuView"/>
@@ -67,6 +68,15 @@
    </property>
    <property name="text">
     <string>Upgrade Firmware</string>
+   </property>
+  </action>
+  <action name="actionAbout_XScopes_Interface">
+   <property name="icon">
+    <iconset resource="xprotolabinterface.qrc">
+     <normaloff>:/images/images/info16.png</normaloff>:/images/images/info16.png</iconset>
+   </property>
+   <property name="text">
+    <string>About XScopes Interface</string>
    </property>
   </action>
  </widget>

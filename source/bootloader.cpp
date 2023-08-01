@@ -30,6 +30,9 @@ Bootloader::Bootloader(QWidget *parent) :
     workingDir = settings.value("workingDir").toString();
     ui->lineFlash->setText(settings.value("lastHEXFile").toString());
     ui->lineEEPROM->setText(settings.value("lastEEPFile").toString());
+    if(!QDir("firmware").exists()) {    // Create firmware folder if it doesn't exist
+        QDir().mkdir("firmware");
+    }
 }
 
 Bootloader::~Bootloader() {
@@ -263,9 +266,6 @@ void Bootloader::ProcessDone(int exit_val) {
     if(arguments.contains("read")) {
         QByteArray ProcessOutput = myProcess->readAllStandardOutput();
         QFile file;
-        if(!QDir("firmware").exists()) {    // Create firmware folder if it doesn't exist
-            QDir().mkdir("firmware");
-        }
         if(arguments.contains("--eeprom"))
             file.setFileName(QString("firmware/") + ui->lineTarget->text() + ".eep");
         else

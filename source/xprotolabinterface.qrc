@@ -53,5 +53,6 @@
         <file>images/wrench.png</file>
         <file>images/writetqfp.png</file>
         <file>images/download2.png</file>
+        <file>images/gabotronics-hit.png</file>
     </qresource>
 </RCC>

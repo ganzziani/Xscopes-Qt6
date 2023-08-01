@@ -26,6 +26,7 @@ set(PROJECT_SOURCES
         bootloader.ui
         filedownloader.cpp
         filedownloader.h
+        build.h
 )
 
 set(app_icon_resource_windows xprotolabinterface.rc)
