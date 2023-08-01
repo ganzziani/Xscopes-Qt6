@@ -3,6 +3,7 @@
 
 #include <QDialog>
 #include <QProcess>
+#include <QTemporaryDir>
 #include "filedownloader.h"
 
 namespace Ui {
@@ -51,6 +52,7 @@ private:
     FileDownloader *EEPDownloader;
     QUrl HEXFileUrl;
     QUrl EEPFileUrl;
+    QTemporaryDir TempDir;
 };
 
 #endif // BOOTLOADER_H

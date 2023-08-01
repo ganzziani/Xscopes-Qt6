@@ -30,9 +30,6 @@ Bootloader::Bootloader(QWidget *parent) :
     workingDir = settings.value("workingDir").toString();
     ui->lineFlash->setText(settings.value("lastHEXFile").toString());
     ui->lineEEPROM->setText(settings.value("lastEEPFile").toString());
-    if(!QDir("firmware").exists()) {    // Create firmware folder if it doesn't exist
-        QDir().mkdir("firmware");
-    }
     if(QSslSocket::supportsSsl()) {
         ui->textEdit->append("SslSupport ok: ");
         ui->textEdit->append("SslLibraryBuildVersion: " + QSslSocket::sslLibraryBuildVersionString());
@@ -151,7 +148,7 @@ void Bootloader::HEXDownloaded(QNetworkReply::NetworkError error, QString ErrorS
         ShowDownloadError(error);
     } else {
         QString fileName = HEXDownloader->CurrentUrl().fileName();
-        fileName.prepend("firmware/");
+        fileName.prepend(TempDir.path() + "/");
         QFile file(fileName);
         if(!file.open(QIODevice::WriteOnly)) {
             QMessageBox::information(this, tr("Unable to open file"),
@@ -162,7 +159,7 @@ void Bootloader::HEXDownloaded(QNetworkReply::NetworkError error, QString ErrorS
         stream << HEXDownloader->downloadedData();
         file.close();
         ui->lineFlash->setText(fileName);
-        ui->textEdit->append("HEX File Downloaded successfully");
+        ui->textEdit->append("HEX File Downloaded successfully to temporary folder");
     }
 }
 
@@ -172,7 +169,7 @@ void Bootloader::EEPDownloaded(QNetworkReply::NetworkError error, QString ErrorS
         ShowDownloadError(error);
     } else {
         QString fileName = EEPDownloader->CurrentUrl().fileName();
-        fileName.prepend("firmware/");
+        fileName.prepend(TempDir.path() + "/");
         QFile file(fileName);
         if(!file.open(QIODevice::WriteOnly)) {
             QMessageBox::information(this, tr("Unable to open file"),
@@ -183,7 +180,7 @@ void Bootloader::EEPDownloaded(QNetworkReply::NetworkError error, QString ErrorS
         stream << EEPDownloader->downloadedData();
         file.close();
         ui->lineEEPROM->setText(fileName);
-        ui->textEdit->append("EEP File Downloaded successfully");
+        ui->textEdit->append("EEP File Downloaded successfully to temporary folder");
     }
 }
 
@@ -277,9 +274,9 @@ void Bootloader::ProcessDone(int exit_val) {
         QByteArray ProcessOutput = myProcess->readAllStandardOutput();
         QFile file;
         if(arguments.contains("--eeprom"))
-            file.setFileName(QString("firmware/") + ui->lineTarget->text() + ".eep");
+            file.setFileName(TempDir.path()  + "/" + ui->lineTarget->text() + ".eep");
         else
-            file.setFileName(QString("firmware/") + ui->lineTarget->text() + ".hex");
+            file.setFileName(TempDir.path()  + "/" + ui->lineTarget->text() + ".hex");
         if(!file.open(QFile::WriteOnly | QFile::Text)) {
             ui->textEdit->append("Can't open file: " + file.fileName());
             return;
@@ -290,7 +287,7 @@ void Bootloader::ProcessDone(int exit_val) {
         if(ProcessOutput.length()) {
             file.write(ProcessOutput.data(), ProcessOutput.length());
             file.close();
-            ui->textEdit->append("File saved at: " + file.fileName());
+            ui->textEdit->append("File saved at temporary folder: " + file.fileName());
         }
     } else {
         ui->textEdit->append(myProcess->readAllStandardOutput());
