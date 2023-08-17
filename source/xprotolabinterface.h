@@ -7,7 +7,7 @@
 #include "bootloader.h"
 
 #define MAJOR               0   // Major version
-#define MINOR               2   // Minor version
+#define MINOR               4   // Minor version
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class XprotolabInterface; }
