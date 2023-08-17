@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>930</width>
+    <width>1122</width>
     <height>604</height>
    </rect>
   </property>
@@ -314,7 +314,7 @@
          <string>Preserve EEPROM</string>
         </property>
         <property name="checked">
-         <bool>true</bool>
+         <bool>false</bool>
         </property>
        </widget>
       </item>
