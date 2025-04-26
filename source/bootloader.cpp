@@ -5,6 +5,7 @@
 #include <QBuffer>
 #include <QFile>
 #include <QSettings>
+#include <QScrollBar>
 
 Bootloader::Bootloader(QWidget *parent) :
     QDialog(parent),
@@ -28,8 +29,12 @@ Bootloader::Bootloader(QWidget *parent) :
     QCoreApplication::setApplicationName("XScopes Interface");
     QSettings settings;
     workingDir = settings.value("workingDir").toString();
-    ui->lineFlash->setText(settings.value("lastHEXFile").toString());
-    ui->lineEEPROM->setText(settings.value("lastEEPFile").toString());
+    QString LastHexFile = settings.value("lastHEXFile").toString();
+    QString LastEEPFile = settings.value("lastEEPFile").toString();
+    QFileInfo fileInfoHEX(LastHexFile);
+    QFileInfo fileInfoEEP(LastEEPFile);
+    if(fileInfoHEX.exists()) ui->lineFlash->setText(LastHexFile);
+    if(fileInfoEEP.exists()) ui->lineEEPROM->setText(LastEEPFile);
     if(QSslSocket::supportsSsl()) {
         ui->textEdit->append("SslSupport ok: ");
         ui->textEdit->append("SslLibraryBuildVersion: " + QSslSocket::sslLibraryBuildVersionString());
@@ -83,35 +88,45 @@ void Bootloader::on_pushSelectEEPROMFile_clicked() {
 }
 
 void Bootloader::on_pushReadFlash_clicked() {
-    ui->textEdit->append("Reading Flash...");
+    ui->textEdit->append(QString("Reading Flash from ") + ui->lineTarget->text());
     arguments.clear();
     arguments << ui->lineTarget->text() << "read";
     myProcess->start(program, arguments);
 }
 
 void Bootloader::on_pushReadEE_clicked() {
-    ui->textEdit->append("Reading EEPROM...");
+    ui->textEdit->append(QString("Reading EEPROM from ") + ui->lineTarget->text());
     arguments.clear();
     arguments << ui->lineTarget->text() << "read" << "--eeprom";
     myProcess->start(program, arguments);
 }
 
 void Bootloader::on_pushErase_clicked() {
-    ui->textEdit->append("Erasing memory...");
+    ui->textEdit->append(QString("Erasing memory of ") + ui->lineTarget->text());
     arguments.clear();
     arguments << ui->lineTarget->text() << "erase";
     myProcess->start(program, arguments);
 }
 
 void Bootloader::on_pushFlash_clicked() {
-    ui->textEdit->append("Programming Flash...");
+    QFileInfo fileInfoHEX(ui->lineFlash->text());
+    if(!fileInfoHEX.exists()) {
+        ui->textEdit->append("Invalid HEX File");
+        return;
+    }
+    ui->textEdit->append(QString("Programming Flash to ") + ui->lineTarget->text());
     arguments.clear();
     arguments << ui->lineTarget->text() << "flash" << ui->lineFlash->text() << "--ignore-outside";
     myProcess->start(program, arguments);
 }
 
 void Bootloader::on_pushEEPROM_clicked() {
-    ui->textEdit->append("Programming EEPROM...");
+    QFileInfo fileInfoEEP(ui->lineEEPROM->text());
+    if(!fileInfoEEP.exists()) {
+        ui->textEdit->append("Invalid EEPROM file");
+        return;
+    }
+    ui->textEdit->append(QString("Programming EEPROM to ") + ui->lineTarget->text());
     arguments.clear();
     arguments << ui->lineTarget->text() << "flash" << "--eeprom" << ui->lineEEPROM->text() << "--force";
     myProcess->start(program, arguments);
@@ -126,12 +141,14 @@ void Bootloader::on_pushStart_clicked() {
 }
 
 void Bootloader::on_pushDoEverything_clicked() {
-    if(ui->lineFlash->text().isEmpty()) {
-        ui->textEdit->append("No Flash file selected");
+    QFileInfo fileInfoHEX(ui->lineFlash->text());
+    QFileInfo fileInfoEEP(ui->lineEEPROM->text());
+    if(!fileInfoHEX.exists()) {
+        ui->textEdit->append("Invalid HEX File");
         return;
     }
-    if(!ui->checkPreserveEE->isChecked() && ui->lineEEPROM->text().isEmpty()) {
-        ui->textEdit->append("No EEPROM file selected");
+    if(!ui->checkPreserveEE->isChecked() && !fileInfoEEP.exists()) {
+        ui->textEdit->append("Invalid EEPROM file");
         return;
     }
     ui->textEdit->append("Performing Firmware Update...");
@@ -270,6 +287,8 @@ void Bootloader::on_checkPreserveEE_toggled(bool checked) {
 // The dfu process has completed an operation
 void Bootloader::ProcessDone(int exit_val) {
     ui->textEdit->append(myProcess->readAllStandardError());
+    ui->textEdit->verticalScrollBar()->setSliderPosition(
+        ui->textEdit->verticalScrollBar()->maximum());
     if(arguments.contains("read")) {
         QByteArray ProcessOutput = myProcess->readAllStandardOutput();
         QFile file;
